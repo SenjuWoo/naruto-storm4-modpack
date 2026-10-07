@@ -14,12 +14,12 @@
 <p align="center">
   <img src="https://img.shields.io/badge/repo-docs%20%2B%20attribution-ff7a18?labelColor=140b07" alt="Docs and attribution">
   <img src="https://img.shields.io/badge/archive-not%20in%20git-8f9aa6?labelColor=140b07" alt="Archive not in git">
-  <a href="https://github.com/ShugokiFable/naruto-storm4-modpack/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/release-v1.0.0%207z-53d7ff?labelColor=140b07" alt="v1.0.0 7z"></a>
+  <a href="https://github.com/SenjuWoo/naruto-storm4-modpack/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/release-v1.0.0%207z-53d7ff?labelColor=140b07" alt="v1.0.0 7z"></a>
   <img src="https://img.shields.io/badge/game-not%20included-e23d2b?labelColor=140b07" alt="Game not included">
 </p>
 
 <p align="center">
-  <a href="https://github.com/ShugokiFable/naruto-storm4-modpack/releases/tag/v1.0.0">Release v1.0.0</a>
+  <a href="https://github.com/SenjuWoo/naruto-storm4-modpack/releases/tag/v1.0.0">Release v1.0.0</a>
   ·
   <a href="NOTES.md">Notes</a>
   ·
@@ -53,7 +53,7 @@ The game itself is **not** included.
 
 ## Download the archive
 
-The git tree will never contain the pack. GitHub Release **[v1.0.0](https://github.com/ShugokiFable/naruto-storm4-modpack/releases/tag/v1.0.0)** attaches a split 7z because a single file would exceed the 2&nbsp;GB release-asset cap.
+The git tree will never contain the pack. GitHub Release **[v1.0.0](https://github.com/SenjuWoo/naruto-storm4-modpack/releases/tag/v1.0.0)** attaches a split 7z because a single file would exceed the 2&nbsp;GB release-asset cap.
 
 1. Download **both** parts into the same folder:
    - `Naruto.Shippuden.Ultimate.Ninja.Storm.4.Woomodpack-2.7z.001` (1,110,879,396 bytes)
