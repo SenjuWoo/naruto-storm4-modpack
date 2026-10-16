@@ -1,0 +1,153 @@
+{
+  "schema": 2,
+  "profiles": [
+    {
+      "signatures": [
+        {
+          "index": 0,
+          "game_rva": "0xa0b50a",
+          "length": 47,
+          "expected_sha256": "a01fa4ace514790e45217fb99372eb0d9f4d5699b8491023ec6b8f116f4f3ffc"
+        },
+        {
+          "index": 1,
+          "game_rva": "0x19d79a",
+          "length": 32,
+          "expected_sha256": "90eccc70853e2db0e6ef2b61e795feb343769c7303f3d88466e6427f2fb4db0e"
+        },
+        {
+          "index": 2,
+          "game_rva": "0x9e04f0",
+          "length": 24,
+          "expected_sha256": "b4342b6728cf083cf591bf7c405cbafb57bce4c24a981f96a2f5b79928852ac4"
+        },
+        {
+          "index": 3,
+          "game_rva": "0xa0b835",
+          "length": 32,
+          "expected_sha256": "237b4826a6ec28fe2d628fc413d9d13dc357b79bacbe91241ff78ce0e8d6b4f6"
+        },
+        {
+          "index": 4,
+          "game_rva": "0x78f930",
+          "length": 1015,
+          "expected_sha256": "1c47b5d2c03c312035b66a897a04b1cdf3be0a5d4cb4f2754f8679d0bdcad51b"
+        },
+        {
+          "index": 5,
+          "game_rva": "0x78ee94",
+          "length": 302,
+          "expected_sha256": "e327dad1ae6eb59a4f7ebccaaa2d76be2632fbc14a37bad72506cffd7ea48587"
+        },
+        {
+          "index": 6,
+          "game_rva": "0x790fa0",
+          "length": 42,
+          "expected_sha256": "d3773c619086ee135313844c868a80732f3182aa3a3a4dfa61966baadf09b55c"
+        },
+        {
+          "index": 7,
+          "game_rva": "0x5244e8",
+          "length": 20,
+          "expected_sha256": "d8401804c95e75c68c2a53d804fd0eb3c91e16551873e7340def9397d987ac8d"
+        },
+        {
+          "index": 8,
+          "game_rva": "0x782566",
+          "length": 128,
+          "expected_sha256": "041db85c8b2d87c2220619335561b6750385c2e8bc0561dd00da8fc4a55f4350"
+        },
+        {
+          "index": 9,
+          "game_rva": "0x7b16a5",
+          "length": 64,
+          "expected_sha256": "e41d7cc72b4f55390a2501e66b0c2ac1cc043953d9cb40fd6d8a173d5437089b"
+        },
+        {
+          "index": 10,
+          "game_rva": "0x7b1bc5",
+          "length": 64,
+          "expected_sha256": "bee4deebb0dbfd36260dcc85dfc29391c886f6a8d6088b2532ab37cc322d42c1"
+        }
+      ],
+      "profile_rva": "0x16370",
+      "core_probe_count": 11
+    },
+    {
+      "signatures": [
+        {
+          "index": 0,
+          "game_rva": "0xa07e8a",
+          "length": 47,
+          "expected_sha256": "a01fa4ace514790e45217fb99372eb0d9f4d5699b8491023ec6b8f116f4f3ffc"
+        },
+        {
+          "index": 1,
+          "game_rva": "0x19cefa",
+          "length": 32,
+          "expected_sha256": "60103a96513d1e180174295414de3b98fe4d73c64a3891559b3ff4e54f14fd6e"
+        },
+        {
+          "index": 2,
+          "game_rva": "0x9dd0e0",
+          "length": 24,
+          "expected_sha256": "b4342b6728cf083cf591bf7c405cbafb57bce4c24a981f96a2f5b79928852ac4"
+        },
+        {
+          "index": 3,
+          "game_rva": "0xa081b5",
+          "length": 32,
+          "expected_sha256": "8f8b937b6597a507fe07136fcfcc919209ebc2c29134eedf0ba0d9944b09c9c3"
+        },
+        {
+          "index": 4,
+          "game_rva": "0x78c698",
+          "length": 1015,
+          "expected_sha256": "eb1e19ba5e6572dbd3be684fd2e24c7372becef71251dbae0d898d8ab6d45ea7"
+        },
+        {
+          "index": 5,
+          "game_rva": "0x78bc24",
+          "length": 302,
+          "expected_sha256": "c06e822f701647ec884a14d54fecb2646fe2adf0521c31e973b32074dfe6efb5"
+        },
+        {
+          "index": 6,
+          "game_rva": "0x78dd08",
+          "length": 42,
+          "expected_sha256": "c05e0b2ac86a2ae057a1fc01cfaa8b7b9f2c3ec20fe20e1ded132ff52df58903"
+        },
+        {
+          "index": 7,
+          "game_rva": "0x524208",
+          "length": 20,
+          "expected_sha256": "58239758f7d8f22af749451c3eee4c651ac83d3818e9159c7595ba24e0c8a446"
+        },
+        {
+          "index": 8,
+          "game_rva": "0x77f372",
+          "length": 128,
+          "expected_sha256": "88890acbefa360bfef6bcbe976a69dac80a9674b3db3edc3220df92adf64e5b6"
+        },
+        {
+          "index": 9,
+          "game_rva": "0x7ae389",
+          "length": 64,
+          "expected_sha256": "19a80fca058b62c42ff49d8a20e5eaa5e2557356506dc1a57eebd2f2e979436d"
+        },
+        {
+          "index": 10,
+          "game_rva": "0x7ae8a9",
+          "length": 64,
+          "expected_sha256": "344c98cb3ef46cd29fdb28e6735864e080c837fcbf1c8cd01e4b9052574f96ae"
+        }
+      ],
+      "profile_rva": "0x163f8",
+      "core_probe_count": 11
+    }
+  ],
+  "native120": {
+    "sha256": "dfb9706e17892cd0d9cad7fb4378e1e15981e8245361711f9b7ab51b6e181651",
+    "version": "0.2.0-beta1"
+  }
+}

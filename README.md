@@ -4,11 +4,11 @@
 
 <h1 align="center">Naruto Storm 4 — Woo Modpack</h1>
 
-<p align="center"><strong>Docs and attribution for a community Storm 4 pack.</strong></p>
+<p align="center"><strong>Community modpack archive and original overhaul diagnostics.</strong></p>
 
 <p align="center">
   This git repository does <strong>not</strong> contain the playable archive.<br>
-  The pack is 3.28&nbsp;GB compressed / 9.29&nbsp;GB uncompressed — over GitHub’s git and 2&nbsp;GB-per-file limits.
+  The legacy archive is 2,221,758,792 bytes compressed and remains on Releases.
 </p>
 
 <p align="center">
@@ -28,12 +28,27 @@
 
 No in-game screenshots are shipped here. The mark is original pack branding, not a Bandai Namco / Shueisha / TV Tokyo asset.
 
-## Why this repo is small
+## Overhaul development
 
-GitHub will not hold a 9.29&nbsp;GB mod tree. This repository is the **readme, notes, and license/attribution files** so the pack has a public home without pretending the binaries live in `git clone`.
+The original **Woo Diagnostics** component builds a read-only native plugin and an explicit-PID runtime probe. It preserves the existing pack loader and genuine compiler. It does not unlock FPS or change combat.
+
+In an isolated copy of the inspected game, the supplied Native120 beta loaded separately without replacing either compiler DLL. Both of its core profiles matched **0/11** required spans in the running game. All 22 spans were readable. A loaded beta is therefore not evidence of working 120 FPS on this executable.
+
+Build and test on Windows x64 with Python 3.11+ and MinGW g++:
 
 ```text
-this repo     NOTES.md, README, community files
+python tools/build.py
+python -m unittest discover -s tests -v
+```
+
+See [test results](TEST_RESULTS.md), [build instructions](BUILD.md), [installation and rollback](INSTALL.md), and the [roadmap](ROADMAP.md). Native logging is quiet by default; `WOO_STORM4_DEBUG=1` enables the report described in INSTALL.md. Original diagnostics source is under the [MIT license](src/LICENSE). Game files, the beta and legacy third-party mods are not covered by that grant.
+
+## Why this repo is small
+
+This repository contains original diagnostics source/tests and the legacy pack's documentation and attribution. Game files and third-party mod binaries stay out of the Git tree.
+
+```text
+this repo     original diagnostics source/tests, research, legacy notes
 not in git    the .xfbin pack (5,841 files / 427 folders)
 on Releases   split 7z, two parts, for people who want the archive
 you provide   Naruto Shippuden: Ultimate Ninja Storm 4 (PC)
@@ -81,13 +96,13 @@ LICENSE       docs license; each mod keeps its author’s terms
 docs/images/  pack mark only
 ```
 
-There is no installer script and no game folder overlay in this repository.
+The diagnostics payload is built separately from the legacy archive. It contains only its own `moddingapi/mods/woo_diagnostics` folder.
 
 ## Honest status
 
 Verified:
 
-- this repository is documentation / attribution only
+- original diagnostics build and test evidence is recorded in TEST_RESULTS.md
 - v1.0.0 release assets exist at the names and byte sizes above
 - notes record 5,841 files / 427 folders / `7z t` OK
 
@@ -96,6 +111,7 @@ Not claimed:
 - the archive is inside `git clone`
 - a first-party character-by-character credits table (this pack is a personal/community bundle — see NOTES)
 - in-game screenshots
+- stable 120 FPS or a completed gameplay overhaul
 - affiliation with Bandai Namco, CyberConnect2, Shueisha, or TV Tokyo
 
 ## Credits

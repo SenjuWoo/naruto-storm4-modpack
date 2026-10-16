@@ -1,0 +1,6 @@
+# Generated/private evidence and compiled artifacts stay out of public source.
+/build*/
+/dist/
+/evidence/
+__pycache__/
+*.pyc

@@ -1,0 +1,7 @@
+Woo Diagnostics 0.1.0
+- Add an original read-only native compatibility diagnostic module.
+- Check both supplied beta core profiles using SHA256 fingerprints.
+- Distinguish signature mismatches, bounds refusals and probe failures.
+- Preserve the existing compiler proxy and genuine compiler.
+- Add matching-source runtime probe and real native process tests.
+- No FPS, combat, graphics, roster or save changes.

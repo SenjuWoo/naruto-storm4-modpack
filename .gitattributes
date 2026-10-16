@@ -1,0 +1,5 @@
+# Keep committed source reproducible across Windows and CI.
+* text=auto eol=lf
+*.dll binary
+*.png binary
+*.zip binary
