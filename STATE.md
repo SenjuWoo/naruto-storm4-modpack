@@ -12,7 +12,7 @@ Build/test/package commands are in [BUILD.md](BUILD.md). Logs and rollback are i
 
 ## Repository tooling (2026-10-31)
 
-- Replaced the 99-byte LICENSE stub with valid MIT text and a scope note; GitHub license detection should no longer report NOASSERTION.
+- Replaced the 99-byte LICENSE stub with valid MIT text; GitHub license detection now reports MIT, and the scope is documented in the README.
 - Added author-level [CREDITS.md](CREDITS.md) transcribed from the archive's `Credits.txt`; it does not claim a file-by-file mapping.
 - Added `release/SHA256SUMS.txt` for the two v1.0.0 volumes and `tools/verify_release.py`. The downloaded release bytes matched the pinned hashes on 2026-10-31.
 - Added `scripts/WooPack.ps1` with `Install.bat`/`Uninstall.bat`: backup, SHA-256 manifest, rollback, `.woopack-displaced` preservation, and `\\?\` long-path handling. Eight Windows fixture tests pass, including interrupted-install recovery.

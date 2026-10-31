@@ -2,7 +2,7 @@
 
 ## Repository tooling - 2026-10-31
 
-- Replace the 99-byte LICENSE stub with valid MIT text and a clear scope note.
+- Replace the 99-byte LICENSE stub with valid MIT text; the license scope is documented in the README.
 - Add author-level `CREDITS.md` from the archive's `Credits.txt`.
 - Pin the v1.0.0 release hashes in `release/SHA256SUMS.txt` and add `tools/verify_release.py`.
 - Add the transactional pack installer/uninstaller and Windows fixture tests.
