@@ -10,6 +10,6 @@
 - Archive integrity verified: `7z t` → "Everything is Ok" (Blocks = 2, Folders = 427, Files = 5841)
 
 MODPACK ARCHIVE (2026-08-29) — mirrors of the same content, no split needed:
-- Local: `Z:\Archive\Naruto-Modpack-2026-08-29\Naruto Shippuden Ultimate Ninja Storm 4 Woomodpack.zip` (3.28 GB zip)
+- A local zip copy is kept outside the repository (3.28 GB zip).
 - Google Drive: original source in the Drive (see migration notes)
 NOTE: Contains personal save file 'My save/STORM4.S' (130KB) — review before distribution.

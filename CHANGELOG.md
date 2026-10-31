@@ -1,5 +1,13 @@
 # Changelog
 
+## Repository tooling - 2026-10-31
+
+- Replace the 99-byte LICENSE stub with valid MIT text and a clear scope note.
+- Add author-level `CREDITS.md` from the archive's `Credits.txt`.
+- Pin the v1.0.0 release hashes in `release/SHA256SUMS.txt` and add `tools/verify_release.py`.
+- Add the transactional pack installer/uninstaller and Windows fixture tests.
+- Document install, rollback, and troubleshooting in `README.md`.
+
 ## Woo Diagnostics 0.1.0 - 2026-10-16 - experimental component
 
 - Add original read-only native diagnostics and an explicit-PID process probe.
