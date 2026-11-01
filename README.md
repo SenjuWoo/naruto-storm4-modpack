@@ -14,7 +14,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/repo-docs%20%2B%20attribution-ff7a18?labelColor=140b07" alt="Docs and attribution">
   <img src="https://img.shields.io/badge/archive-not%20in%20git-8f9aa6?labelColor=140b07" alt="Archive not in git">
-  <a href="https://github.com/SenjuWoo/naruto-storm4-modpack/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/release-v1.0.0%207z-53d7ff?labelColor=140b07" alt="v1.0.0 7z"></a>
+  <a href="https://github.com/SenjuWoo/naruto-storm4-modpack/releases/latest"><img src="https://img.shields.io/github/v/release/SenjuWoo/naruto-storm4-modpack?label=release&color=53d7ff&labelColor=140b07" alt="latest release"></a>
   <img src="https://img.shields.io/badge/game-not%20included-e23d2b?labelColor=140b07" alt="Game not included">
 </p>
 
