@@ -62,6 +62,29 @@ function Test-DirExists {
 }
 
 
+# A manifest path must stay a relative path inside the selected game folder.
+function Test-SafeRelativePath {
+    param([string]$Path)
+    if ([string]::IsNullOrWhiteSpace($Path)) { return $false }
+    if ([System.IO.Path]::IsPathRooted($Path)) { return $false }
+    $parts = $Path -split '[\\/]'
+    if ($parts -contains '..' -or $parts -contains '.') { return $false }
+    return $true
+}
+
+
+# Resolve a manifest/payload relative path and reject any escape from Game.
+function Get-SafeDestination {
+    param([string]$Game, [string]$Relative)
+    if (-not (Test-SafeRelativePath $Relative)) { throw "Unsafe relative path in manifest: $Relative" }
+    $destination = [System.IO.Path]::GetFullPath((Join-Path $Game $Relative))
+    if (-not $destination.StartsWith($Game + '\', [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Path escapes the game folder: $Relative"
+    }
+    return $destination
+}
+
+
 function Get-FileSize {
     param([string]$Path)
     return [System.IO.FileInfo]::new((Get-LongPath $Path)).Length
@@ -159,6 +182,7 @@ function Install-Pack {
 
     $payload = @(Get-PayloadFiles $Source)
     if ($payload.Count -eq 0) { throw 'Pack payload is empty.' }
+    foreach ($item in $payload) { [void](Get-SafeDestination $Game $item.Relative) }
 
     $sourceBytes = 0
     $backupBytes = 0
@@ -190,6 +214,9 @@ function Install-Pack {
     }
 
     $backupRoot = Join-Path $Game $BackupName
+    if (Test-DirExists $backupRoot) {
+        throw "A pre-existing $BackupName folder exists in $Game. Move it away; WooPack will not overwrite or delete an unowned backup folder."
+    }
 
     # Record the plan before touching the game: a crash mid-copy still leaves a
     # manifest that Uninstall can use to restore originals and remove partial copies.
@@ -248,20 +275,30 @@ function Install-Pack {
 
 
 # Remove pack-owned files, preserve edits, then restore and verify every backup.
-# A manifest left in 'installing' state is recoverable: a missing backup means
-# the original was never moved, so the destination is left untouched.
+# Missing or corrupt backups block the rollback before any file is changed; the
+# manifest and remaining backups are kept for manual recovery.
 function Uninstall-Pack {
     param([string]$Game)
     $manifestPath = Join-Path $Game $ManifestName
     if (-not (Test-FileExists $manifestPath)) { throw "No WooPack manifest found in $Game. Nothing to uninstall." }
     $manifest = [System.IO.File]::ReadAllText((Get-LongPath $manifestPath)) | ConvertFrom-Json
+    if ($manifest.schema -ne 2) { throw "Unsupported WooPack manifest schema: $($manifest.schema)." }
+    if (-not $manifest.game_path) { throw "Manifest has no game_path." }
     if ((Get-NormalizedPath $manifest.game_path) -ne $Game) { throw "Manifest belongs to $($manifest.game_path), not $Game." }
+    if (-not $manifest.files -or @($manifest.files).Count -eq 0) { throw "Manifest has no file list." }
+
+    # Validate every path before any destructive operation.
+    foreach ($entry in @($manifest.files) + @($manifest.backups)) {
+        if ($null -eq $entry) { continue }
+        [void](Get-SafeDestination $Game $entry.path)
+    }
 
     $backupRoot = Join-Path $Game $BackupName
     $removed = 0
     $displaced = 0
     $missing = 0
     $restored = 0
+    $incomplete = 0
     $backupPaths = @{}
     foreach ($backupEntry in @($manifest.backups)) {
         if ($null -ne $backupEntry) { $backupPaths[$backupEntry.path] = $backupEntry }
@@ -272,18 +309,40 @@ function Uninstall-Pack {
         return
     }
 
+    # Preflight: never start a rollback that cannot restore an original.
+    # A missing backup is acceptable only when the original is still in place
+    # (the interrupted-install case), never when it would lose the original.
+    $alreadyInPlace = @{}
+    foreach ($backupEntry in $backupPaths.Values) {
+        $backup = Join-Path $backupRoot $backupEntry.path
+        $destination = Get-SafeDestination $Game $backupEntry.path
+        $backupOk = (Test-FileExists $backup) -and ((Get-Sha256 $backup) -eq $backupEntry.sha256)
+        if (-not $backupOk) {
+            if ((Test-FileExists $destination) -and ((Get-Sha256 $destination) -eq $backupEntry.sha256)) {
+                $alreadyInPlace[$backupEntry.path] = $true
+            } else {
+                Write-Warning "Required backup is missing or corrupt: $backup"
+                $incomplete++
+            }
+        }
+    }
+    if ($incomplete -gt 0) {
+        Write-Log ("Rollback blocked: {0} required backup(s) are missing or corrupt; manifest and backups kept." -f $incomplete)
+        throw "Rollback incomplete; no game files were changed."
+    }
+
     foreach ($entry in @($manifest.files)) {
         if ($null -eq $entry) { continue }
-        $destination = Join-Path $Game $entry.path
+        $destination = Get-SafeDestination $Game $entry.path
         $backup = Join-Path $backupRoot $entry.path
         $hadBackup = $false
         if ($entry.PSObject.Properties.Name -contains 'had_backup') { $hadBackup = [bool]$entry.had_backup }
         elseif ($backupPaths.ContainsKey($entry.path)) { $hadBackup = $true }
 
+        if ($alreadyInPlace.ContainsKey($entry.path)) { continue }
         if ($hadBackup -and -not (Test-FileExists $backup)) {
-            # The original was never moved; leave the destination untouched.
-            if (-not (Test-FileExists $destination)) { $missing++ }
-            elseif ((Get-Sha256 $destination) -eq $entry.sha256) { Write-Warning "Backup missing for installed file: $destination" }
+            Write-Warning "Backup disappeared during rollback: $backup"
+            $incomplete++
             continue
         }
 
@@ -305,21 +364,27 @@ function Uninstall-Pack {
 
     foreach ($entry in @($manifest.backups)) {
         if ($null -eq $entry) { continue }
+        if ($alreadyInPlace.ContainsKey($entry.path)) { $restored++; continue }
         $backup = Join-Path $backupRoot $entry.path
-        $destination = Join-Path $Game $entry.path
-        if (-not (Test-FileExists $backup)) { continue }
-        if ((Get-Sha256 $backup) -ne $entry.sha256) { throw "Backup hash mismatch: $backup" }
+        $destination = Get-SafeDestination $Game $entry.path
+        if (-not (Test-FileExists $backup)) { $incomplete++; continue }
+        if ((Get-Sha256 $backup) -ne $entry.sha256) { $incomplete++; continue }
         $destinationDir = Split-Path -Parent $destination
         if (-not (Test-DirExists $destinationDir)) { [void][System.IO.Directory]::CreateDirectory((Get-LongPath $destinationDir)) }
         [System.IO.File]::Copy((Get-LongPath $backup), (Get-LongPath $destination), $true)
-        if ((Get-Sha256 $destination) -ne $entry.sha256) { throw "Restored file hash mismatch: $destination" }
+        if ((Get-Sha256 $destination) -ne $entry.sha256) { $incomplete++; continue }
         [System.IO.File]::Delete((Get-LongPath $backup))
         $restored++
     }
 
+    if ($incomplete -gt 0) {
+        Write-Log ("Rollback INCOMPLETE: {0} file(s) could not be restored; manifest and backups kept." -f $incomplete)
+        throw "Rollback incomplete. Manifest and recoverable backups were kept."
+    }
+
     foreach ($entry in @($manifest.files)) {
         if ($null -eq $entry) { continue }
-        $directory = Split-Path -Parent (Join-Path $Game $entry.path)
+        $directory = Split-Path -Parent (Get-SafeDestination $Game $entry.path)
         while ($directory -and (Get-NormalizedPath $directory) -ne $Game) {
             try { [System.IO.Directory]::Delete((Get-LongPath $directory), $false) } catch { break }
             $directory = Split-Path -Parent $directory
@@ -341,6 +406,11 @@ try {
         if (-not (Test-FileExists (Join-Path $GamePath 'NSUNS4.exe'))) { throw "NSUNS4.exe not found in $GamePath." }
         if (-not $SourcePath) { $SourcePath = Read-Host 'Extracted pack folder (contains moddingapi)' }
         $SourcePath = Resolve-PackRoot $SourcePath
+        if ($SourcePath -eq $GamePath -or
+            $SourcePath.StartsWith($GamePath + '\', [System.StringComparison]::OrdinalIgnoreCase) -or
+            $GamePath.StartsWith($SourcePath + '\', [System.StringComparison]::OrdinalIgnoreCase)) {
+            throw "SourcePath and GamePath overlap. Point SourcePath at the extracted pack folder, not the game folder."
+        }
     } else {
         if (-not $GamePath) { $GamePath = Find-GamePath }
         if (-not $GamePath) { $GamePath = Read-Host 'Storm 4 game folder (the one containing NSUNS4.exe)' }

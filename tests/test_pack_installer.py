@@ -142,6 +142,42 @@ class PackInstallerTests(unittest.TestCase):
         self.assertFalse((self.game / "_WooPack_Backup").exists())
         self.assertFalse((self.game / ".woopack-manifest.json").exists())
 
+    def test_uninstall_missing_backup_aborts_and_keeps_manifest(self):
+        self.assertEqual(self.run_script("Install", source=self.source).returncode, 0)
+        (self.game / "_WooPack_Backup/data/launch/movie1.cpk").unlink()
+        result = self.run_script("Uninstall")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertTrue((self.game / ".woopack-manifest.json").exists())
+        self.assertTrue((self.game / "_WooPack_Backup").exists())
+        self.assertEqual((self.game / "data/launch/movie1.cpk").read_bytes(), b"pack-movie")
+
+    def test_uninstall_rejects_path_escape(self):
+        self.assertEqual(self.run_script("Install", source=self.source).returncode, 0)
+        manifest_path = self.game / ".woopack-manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["files"][0]["path"] = "..\\outside.txt"
+        manifest_path.write_text(json.dumps(manifest))
+        outside = self.root / "outside.txt"
+        outside.write_bytes(b"do-not-touch")
+        result = self.run_script("Uninstall")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(outside.read_bytes(), b"do-not-touch")
+        self.assertTrue(manifest_path.exists())
+
+    def test_refuses_unowned_backup_folder(self):
+        write(self.game / "_WooPack_Backup/unrelated.bin", b"keep")
+        result = self.run_script("Install", source=self.source)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual((self.game / "_WooPack_Backup/unrelated.bin").read_bytes(), b"keep")
+        self.assertFalse((self.game / ".woopack-manifest.json").exists())
+
+    def test_refuses_source_inside_game(self):
+        nested = self.game / "_src"
+        write(nested / "moddingapi/config.ini", b"pack-config")
+        result = self.run_script("Install", source=nested)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse((self.game / ".woopack-manifest.json").exists())
+
     def test_dry_run_writes_nothing(self):
         result = self.run_script("Install", source=self.source, extra=("-DryRun",))
         self.assertEqual(result.returncode, 0, result.stderr)

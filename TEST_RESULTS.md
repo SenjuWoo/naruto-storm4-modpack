@@ -53,6 +53,16 @@ Result: 11/11 core spans and 7/7 hook bodies are present. Two core spans match e
 
 No profile was rebound, no patch was applied, no binary was changed and no game process was launched for this mapping. FPS, simulation, combat and stability remain unmeasured. Details: [NATIVE120-LAYOUT.md](NATIVE120-LAYOUT.md).
 
+## 2026-11-08 activation attempt and installer hardening
+
+The live install was restored before this work: `NSUNS4.exe` SHA-256 `147e52a3...`, root `d3dcompiler_47.dll` and `d3dcompiler_47.api.bak` both `5e486da4...`, and `config.ini` restored from `config.ini.pre120` with `vsync=1` and no `fps=120` line. No game process remained.
+
+The beta's profile-0 path was rebuilt with the mapped core descriptors, the profile-0 hook table/body bytes and the mapped hardcoded hook starts. The profile marker was left at `0x790FA0`; the two stale guard loops were allowed to continue instead of aborting. The beta loaded, but a live scan found **zero** `FF 25` hook stubs. A second run with the marker changed to the live hook start selected the old profile-1 constants and wrote 17 jumps at old addresses (`0x7AE389`, `0x319E5D`, ...); that result was rejected as unsafe. The five timing constants were also patched at their correct live RVAs (`0xA0C29C`, `0xA0C2A2`, `0xA0C2AF`, `0x9E1321`, `0x19D95D`); with `fps=120` and `vsync=0`, the title/opening overlay still read **58-59 FPS**. No Free Battle measurement was possible, so this is not a 120 FPS result.
+
+Root cause of the remaining refusal is the beta's `FUN_180001260` activation path, specifically the profile-0 guard table at `0x1800013ac` (15 entries, old RVAs/bytes). The next experiment is to map all 15 guard entries to the installed image and re-test; a debugger breakpoint at the failure return can identify the exact failing entry if mapping is ambiguous. Blind branch bypassing is not accepted.
+
+Installer changes: manifest schema/path validation, source/game overlap refusal, unowned `_WooPack_Backup` refusal, preflight of every required backup, and incomplete-rollback handling that keeps the manifest and recoverable backups. The test suite now has **29 passing tests**, including missing-backup abort, path-escape rejection, unowned-backup refusal and source-inside-game refusal. These are fixture tests, not a real-game rollback run.
+
 ## Unpassed gameplay gates
 
 No Free Battle round, movement/jump/dash parity, combo/contact/landing, timer/input/camera, AI/audio/cinematic or sustained-session regression is claimed. No FPS,1%low,latency or frame-time measurement is claimed. [BENCHMARKS.md](BENCHMARKS.md) records pending metrics. Current-build timing support and those regressions are the next work, before graphics/combat/content expansion.

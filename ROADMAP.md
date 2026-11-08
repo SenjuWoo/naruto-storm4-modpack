@@ -8,6 +8,8 @@ The 2026-10-15 on-disk analysis found 0/11 matches in both embedded Native120 co
 
 The incompatibility cause is now identified: the beta's guards are bound to two older layouts. All eleven core spans and seven hook bodies exist in the installed executable at shifted RVAs, with non-uniform deltas; see [NATIVE120-LAYOUT.md](NATIVE120-LAYOUT.md). A guessed relocation is still unacceptable. The remaining gameplay work is a translated patch/hook profile for this layout, measured stock/pack Free Battle baselines and regression proof. The public schema contains only SHA-256 fingerprints, and that native build ran in the side-load test. Rebuild/test/hash receipts remain recorded per binary. A lab request for `fps=120` is not a presented-FPS measurement.
 
+A 2026-11-08 activation attempt rebuilt the profile-0 core/hook tables and hardcoded hook starts. The beta loaded but wrote zero hook stubs; the alternate profile wrote 17 jumps at old addresses and was rejected. The five timing constants alone held the title/opening at 58-59 FPS with `vsync=0`. The blocker is the beta's `FUN_180001260` guard/profile-selection path, specifically the 15-entry profile-0 guard table at `0x1800013ac`. The next step is to map those guard entries to the installed image, not bypass them. No Free Battle or gameplay measurement exists yet.
+
 | Step | Required evidence | Stop condition |
 |---|---|---|
 | Build and test original diagnostics | Compiler/test receipts, DLL identity, real disposable-host checks | Any read/bounds/image-identity or default-silence failure |

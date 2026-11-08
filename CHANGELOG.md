@@ -1,5 +1,14 @@
 # Changelog
 
+## Installer hardening - 2026-11-08
+
+- Validate the manifest schema and every relative path before any uninstall write.
+- Refuse source/game overlap and an unowned `_WooPack_Backup` folder.
+- Preflight every required backup. A missing or corrupt backup stops the rollback before game files change and keeps the manifest plus recoverable backups.
+- Keep interrupted-install recovery when the original is already in place.
+- Make `Install.bat`/`Uninstall.bat` fail clearly if `scripts\WooPack.ps1` is missing.
+- Add failure-injection tests for missing backups, path escape, unowned backups and source-inside-game; 29 tests pass.
+
 ## Repository tooling - 2026-10-31
 
 - Replace the 99-byte LICENSE stub with valid MIT text; the license scope is documented in the README.

@@ -67,6 +67,35 @@ present in the installed executable with high byte identity:
 | 5 | `0x3564F1` | `0x356605` | `+0x114` | 212 | 90.1% | `f0953e33b15881fa4c392d65d4094cc50ac24aa9626b536dcb20bf31c05e8642` |
 | 6 | `0x78FE03` | `0x791A77` | `+0x1C74` | 77 | 98.7% | `930f41e2ea7264a8bd66329a6312a85f712c082e1318b32c3bc1b40d67d2c2b7` |
 
+## Profile-0 guard table
+
+The activation function also checks a 15-entry guard table at beta VA
+`0x180017258` (file offset `0x15A58`). Each entry is 24 bytes: RVA, expected-byte
+pointer, length. The profile-0 entries are:
+
+| # | Beta RVA | Length |
+|---:|---:|---:|
+| 0 | `0x799A20` | 16 |
+| 1 | `0x79909C` | 16 |
+| 2 | `0x79B184` | 16 |
+| 3 | `0x218CF0` | 16 |
+| 4 | `0xEF7AC0` | 4 |
+| 5 | `0xF16CC8` | 4 |
+| 6 | `0x12F9D58` | 4 |
+| 7 | `0x12F9DB4` | 4 |
+| 8 | `0xEEEAFC` | 4 |
+| 9 | `0x47DF14` | 16 |
+| 10 | `0x67AB88` | 16 |
+| 11 | `0x7837C8` | 16 |
+| 12 | `0xA9B9A0` | 16 |
+| 13 | `0x357B84` | 16 |
+| 14 | `0x78CF02` | 16 |
+
+These are still the old build's RVAs. The 2026-11-08 attempt updated the core
+and hook tables but not this guard table; the beta therefore still refused.
+The next attempt must map these 15 entries to live RVAs and copy the live bytes
+into each expected-byte slot. Do not bypass the guard branches.
+
 ## Why the beta still refuses
 
 The beta does not search for these functions. It compares the installed image

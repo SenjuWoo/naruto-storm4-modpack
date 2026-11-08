@@ -36,6 +36,8 @@ The compatibility record is separate from every gameplay/performance metric abov
 | Later controlled beta side-load, 2026-10-16 | Exactly one unchanged `Native120.dll`, plus fingerprint-only diagnostics, loaded; root API and genuine compiler hashes unchanged | Separate loading verified without adapter/proxy replacement |
 | Native and independent probes after beta side-load | 0/11 per profile; all 22 spans readable; no out-of-bounds/probe failures; external status `ok`, `incompatible`, exit 3 | Core-profile incompatibility/refusal remains; no timing-patch or battle proof |
 | Lab FPS configuration in side-load experiment | `fps=120` requested | Configuration only; presented FPS unmeasured |
+| 2026-11-08 profile-0 activation attempt | Beta loaded; zero `FF 25` hook stubs written; alternate profile wrote 17 old-address jumps and was rejected | Activation failed before any Free Battle |
+| 2026-11-08 five timing constants in memory | Title/opening overlay read 58-59 FPS with `fps=120`, `vsync=0` | Presented title/opening only; no battle or simulation measurement |
 
 Current public schema 2 stores only span fingerprints. Native comparison uses `CryptHashCertificate2`; Python comparison uses `hashlib.sha256`; both ran in the later side-load experiment. Exact rebuild/test/hash receipts remain tied to the recorded binary in `TEST_RESULTS.md`. Full timing support for the current build, measured Free Battle baselines and gameplay regressions remain pending.
 

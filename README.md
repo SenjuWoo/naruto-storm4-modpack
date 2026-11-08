@@ -97,7 +97,7 @@ The archive is a loose-file overlay, not a mod-manager build. You can install it
 
 1. Download both volumes and extract the first one to a folder outside the game. 7-Zip follows `.002`; you get a `Naruto To Boruto 2.0` folder.
 2. Close Storm 4.
-3. Download `Install.bat`, `Uninstall.bat`, and `scripts/WooPack.ps1` from this repository. They are not inside the legacy archive.
+3. Download the repository ZIP (or at least keep `Install.bat`, `Uninstall.bat`, and `scripts\WooPack.ps1` together in the same folder). The batch files are not inside the legacy archive; if `scripts\WooPack.ps1` is missing they stop with a clear message instead of a PowerShell error.
 4. Run `Install.bat` and point it at the extracted `Naruto To Boruto 2.0` folder. It auto-detects the Steam library, or pass the game folder explicitly:
 
 ```powershell
@@ -108,7 +108,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\WooPack.ps1 `
 
 The installer copies only `character\`, `data\`, `data_win32\`, `moddingapi\`, and the two compiler DLLs. It does **not** install `Save File\STORM4.S`, `Credits.txt`, or `Installation_Instructions.txt`. Before replacing any existing file it moves the original into `_WooPack_Backup\` and records its SHA-256 in `.woopack-manifest.json`. A missing `NSUNS4.exe`, an existing manifest, or insufficient free space aborts before touching the game folder; budget roughly the pack size plus the size of the files it replaces. `-DryRun` prints the plan without writing.
 
-To roll back, close the game and run `Uninstall.bat` (or `-Action Uninstall`). It removes the pack-owned files, restores every backup, verifies the restored SHA-256, and preserves a file you edited after installation as `<name>.woopack-displaced`. The manifest is written before the first file copy, so an interrupted install can still be rolled back with the same command.
+To roll back, close the game and run `Uninstall.bat` (or `-Action Uninstall`). It removes the pack-owned files, restores every backup, verifies the restored SHA-256, and preserves a file you edited after installation as `<name>.woopack-displaced`. The manifest is written before the first file copy, so an interrupted install can still be rolled back with the same command. If a required backup is missing or corrupt, rollback stops before changing game files and keeps the manifest plus recoverable backups; it never reports success for a partial restore. A pre-existing `_WooPack_Backup` folder without a WooPack manifest is treated as unowned and is never overwritten or deleted.
 
 The installer is fixture-tested in CI. A full install from the 2.2&nbsp;GB release archive is not part of CI, so keep your own backup for a first install.
 
@@ -154,7 +154,7 @@ Verified:
 - v1.0.0 release assets exist at the names and byte sizes above; their SHA-256 hashes are pinned in [`release/SHA256SUMS.txt`](release/SHA256SUMS.txt) and were checked against the downloaded bytes on 2026-10-31
 - notes record 5,841 files / 427 folders / `7z t` OK
 - author-level credits are transcribed from the archive's `Credits.txt` in [`CREDITS.md`](CREDITS.md)
-- the transactional installer/uninstaller passes its Windows fixture tests, including backup, restore, and `.woopack-displaced` preservation
+- the transactional installer/uninstaller passes 29 Windows fixture tests, including backup, restore, `.woopack-displaced` preservation, missing-backup abort, path-escape rejection and unowned-backup refusal; an incomplete rollback keeps the manifest and recoverable backups
 
 Not claimed:
 
