@@ -35,7 +35,7 @@ The inspected beta has 29 PE export forwarders, all targeting corresponding expo
 | `0x16370` | 11 | 0 |
 | `0x163f8` | 11 | 0 |
 
-Two shared byte sequences occur elsewhere in the inspected executable, at RVAs `0xA0C29A` and `0x9E1320`. This is consistent with a different executable layout; it does not establish a safe uniform relocation. Long function bodies, relative calls, state offsets and later guards cannot be corrected by guessing a common offset.
+A 2026-11-07 re-analysis located all eleven core spans and all seven hook bodies in the installed executable; the exact RVAs, deltas, lengths and live SHA-256 values are in [NATIVE120-LAYOUT.md](NATIVE120-LAYOUT.md). Ten core spans are exact or near-exact; the `0x19D79A` span is anchor-located because its RIP displacements differ. The deltas are not uniform (`+0x114` to `+0x465C`), so a common relocation is still invalid. The beta's patch payloads and hardcoded hook addresses remain bound to its recognized layouts; adding hashes alone would not produce a safe profile.
 
 These static results alone did not establish the live-image outcome. Runtime bytes can differ from disk. The initialized copied-game observation below now establishes the same mismatch in that running image; it does not generalize to every executable or prove beta patch execution.
 

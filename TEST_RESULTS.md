@@ -45,6 +45,14 @@ Automatic review rejected one side-load launch because its guard checked only on
 
 After testing, the exact owned lab process was stopped, beta discovery disabled and the lab config restored. The live save, live EXE, both live compiler DLLs and live config hashes remained unchanged. Backups and private raw receipts remain local and ignored by Git.
 
+## 2026-11-07 static layout mapping
+
+Read-only analysis of the exact uploaded beta (`dfb9706e...`) against the installed EXE (`147e52a3...`). The 11 core signatures and 7 profile-0 hook bodies were extracted from the beta, searched exactly, then aligned with anchor-guided byte scoring where exact matching failed. Every selected live RVA was verified inside `.text`.
+
+Result: 11/11 core spans and 7/7 hook bodies are present. Two core spans match exactly; eight are near-exact (30/32 to 1009/1015 bytes); the `0x19D79A` timing span is anchor-located because its RIP displacements differ. Hook body identity ranges from 87.7% to 98.7%. The deltas are non-uniform (`+0x114` to `+0x465C`), so no uniform relocation applies.
+
+No profile was rebound, no patch was applied, no binary was changed and no game process was launched for this mapping. FPS, simulation, combat and stability remain unmeasured. Details: [NATIVE120-LAYOUT.md](NATIVE120-LAYOUT.md).
+
 ## Unpassed gameplay gates
 
 No Free Battle round, movement/jump/dash parity, combo/contact/landing, timer/input/camera, AI/audio/cinematic or sustained-session regression is claimed. No FPS,1%low,latency or frame-time measurement is claimed. [BENCHMARKS.md](BENCHMARKS.md) records pending metrics. Current-build timing support and those regressions are the next work, before graphics/combat/content expansion.
